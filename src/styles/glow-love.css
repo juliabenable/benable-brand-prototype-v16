@@ -445,3 +445,70 @@
 .gl-close2__send:disabled { opacity: 0.4; cursor: default; }
 .gl-close2__send:not(:disabled):hover { transform: scale(1.02); }
 .gl-close2__sent { margin-top: 20px; font-size: 16px; color: #ffd1ea; }
+
+/* ---------- Content · spotlight crossfade (alt design) ----------
+   Each tile sits absolutely stacked; only the active one is opacity 1.
+   The image gets a slight scale + slow drift so it feels alive, not static.
+   The creator name + counter sit OUTSIDE the crossfading stack so the eye
+   has a calm anchor while the image swaps behind. */
+.gl-content2 { gap: 18px; }
+.gl-spotlight {
+  position: relative;
+  width: clamp(260px, 32vw, 340px);
+  aspect-ratio: 4 / 5;
+  margin: 8px auto 0;
+}
+.gl-spot {
+  position: absolute; inset: 0;
+  opacity: 0; transform: scale(0.965);
+  transition: opacity 0.65s ease, transform 5s linear;
+  pointer-events: none;
+}
+.gl-spot.on {
+  opacity: 1; transform: scale(1.02);
+  /* The slow scale "Ken-Burns" makes the held tile feel alive. */
+}
+.gl-spot__img {
+  display: block; width: 100%; height: 100%;
+  background: #ccc center/cover no-repeat;
+  border-radius: 24px;
+  box-shadow: 0 22px 50px rgba(80,50,110,0.32);
+}
+.gl-spot__plat {
+  position: absolute; top: 12px; right: 12px;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700; color: #fff;
+  background: rgba(20,12,30,0.6); padding: 5px 11px; border-radius: 999px;
+  backdrop-filter: blur(3px);
+}
+.gl-spot__meta {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.86);
+  border: 1px solid rgba(255,255,255,0.95);
+  border-radius: 16px;
+  padding: 8px 16px 8px 8px;
+  box-shadow: 0 10px 24px rgba(80,50,110,0.14);
+  margin-top: 14px;
+  min-width: 240px;
+  /* The meta block fades on creator changes — a quick crossfade keyed off
+     the React `current` re-render via a CSS animation. */
+  animation: glSpotMetaIn 0.45s ease both;
+}
+.gl-spot__av {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #ccc center/cover no-repeat; flex: 0 0 auto;
+  border: 2px solid #fff;
+}
+.gl-spot__id { display: flex; flex-direction: column; line-height: 1.15; }
+.gl-spot__id b { font-size: 14px; font-weight: 700; color: #2a2342; }
+.gl-spot__id small { font-size: 11.5px; color: #8a7fa0; }
+.gl-spot__count {
+  margin-top: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 700; color: #6b6080; letter-spacing: 0.04em;
+}
+.gl-spot__count span { color: #b1a8bd; font-weight: 600; }
+@keyframes glSpotMetaIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -311,6 +311,44 @@ export function Content() {
   );
 }
 
+/* Content · alt — one-at-a-time spotlight crossfade. Each piece takes
+   center stage for a beat, then fades out as the next fades in. Loops
+   gracefully whether the campaign has 3 pieces or 30. */
+const SPOTLIGHT_MS = 2600;
+export function ContentSpotlight() {
+  const posts = ALL_POSTS;
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setIdx((i) => (i + 1) % posts.length), SPOTLIGHT_MS);
+    return () => clearInterval(id);
+  }, [posts.length]);
+  const current = posts[idx];
+  const [pc, label] = PLAT_META[current.plat] || PLAT_META.TikTok;
+  return (
+    <div className="gl-slide gl-slide--center gl-content2">
+      <div className="gl-cnt-head"><span className="gl-eyebrow">A seamless experience</span><h2 className="gl-h2"><span className="gl-accent">{TOTALS.pieces} new pieces</span><br />about your brand.</h2></div>
+      <div className="gl-spotlight">
+        {posts.map((p, i) => {
+          const [pcI, labelI] = PLAT_META[p.plat] || PLAT_META.TikTok;
+          return (
+            <div key={i} className={`gl-spot ${i === idx ? 'on' : ''}`} aria-hidden={i !== idx}>
+              <span className="gl-spot__img" style={{ backgroundImage: `url(${p.img})` }} />
+              <span className={`gl-spot__plat gl-spot__plat--${pcI}`}><PlatGlyph p={pcI} /> {labelI}</span>
+            </div>
+          );
+        })}
+      </div>
+      {/* Creator + counter sit OUTSIDE the crossfading stack so the eye stays
+          locked on a single name area while the image swaps behind. */}
+      <div className="gl-spot__meta">
+        <span className="gl-spot__av" style={{ backgroundImage: `url(${current.creator.pic})` }} />
+        <div className="gl-spot__id"><b>{current.creator.name}</b><small>{current.creator.handle} · {label}</small></div>
+      </div>
+      <div className="gl-spot__count">{idx + 1} <span>/ {posts.length}</span></div>
+    </div>
+  );
+}
+
 /* Creators · F — campaign outcome (relationships, not a ranking/stat grid).
    Reframed around the dashboard relationship tags: a big "Favorite" badge
    as the hero, with future picks + new finds tagged alongside. */
@@ -511,7 +549,9 @@ export function Thanks() {
    Creators, thanks polaroids, and the recap-stats slide are cut from V1. */
 export const SLIDES = [
   { key: 'cover', grad: 'dark', dark: true, Body: Cover },
-  { key: 'content', grad: 'f', Body: Content },
+  // Content exploration: one-at-a-time spotlight crossfade.
+  // Swap back to `Body: Content` to return to the marquee/drift version.
+  { key: 'content', grad: 'f', Body: ContentSpotlight },
   { key: 'reach', grad: 'b', Body: Reach },
   // Engagement is the one slide that keeps the floating emojis.
   { key: 'engagement', grad: 'c', emoji: true, Body: Engagement },
