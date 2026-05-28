@@ -144,12 +144,18 @@ export function Reach() {
       <span className="gl-eyebrow">Brand awareness</span>
       <h2 className="gl-h2 gl-reach2__h">Over <span className="gl-accent">{fmt(total)} people</span><br />noticed your brand.</h2>
       <div className={`gl-hwrap gl-hwrap--dense ${play ? 'play' : ''}`} aria-hidden="true">
-        {HEART.map((p, i) => (
-          <span key={i} className="gl-hd" style={{
-            left: `${p[0]}px`, top: `${p[1]}px`, width: `${HEART_DOT}px`, height: `${HEART_DOT}px`,
-            animationDelay: `${((i % 80) * 6).toFixed(0)}ms`,
-          }} />
-        ))}
+        {HEART.map((p, i) => {
+          // Radial bloom: stagger each dot by its distance from the heart's
+          // visual center (slightly above origin in normalized coords).
+          const d = Math.hypot(p[2], p[3] - 0.15);
+          const delay = (d * 620).toFixed(0);
+          return (
+            <span key={i} className="gl-hd" style={{
+              left: `${p[0]}px`, top: `${p[1]}px`, width: `${HEART_DOT}px`, height: `${HEART_DOT}px`,
+              animationDelay: `${delay}ms`,
+            }} />
+          );
+        })}
       </div>
       <p className="gl-sub gl-reach2__sub">each dot is one person</p>
       <blockquote className="gl-quote">
@@ -387,7 +393,7 @@ export function StillGrowing() {
       <span className="gl-eyebrow">And this is just the start</span>
       <h2 className="gl-h2">Your content is <span className="gl-accent">still growing.</span></h2>
       <p className="gl-sub gl-grow__sub">All of this content is less than two weeks old — and it keeps working for you long after the campaign ends.</p>
-      <blockquote className="gl-quote">
+      <blockquote className="gl-quote gl-quote--bold">
         <p className="gl-quote__t">Roughly half the value of a creator campaign comes from the months after launch. Evergreen content is the gift that keeps giving.</p>
         <cite className="gl-quote__cite">— CMO, B2C consumer brand</cite>
       </blockquote>
