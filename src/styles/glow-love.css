@@ -374,3 +374,52 @@
 .glt-cta__txt small { font-size: 12px; color: #6b6080; }
 .glt-cta__btn { margin: 0 !important; flex: 0 0 auto; padding: 12px 20px; }
 @media (max-width: 900px) { .glt-cta { flex-wrap: wrap; } .glt-cta__btn { width: 100%; } }
+
+/* ============================ v16 — Tony pass ============================ */
+
+/* Reach v2 — brand-awareness reframe.
+   Dense lattice (4700+ dots, 1 person each): disable the per-dot twinkle to
+   keep animation cost reasonable, just fade each dot in. */
+.gl-reach2 { gap: 14px; }
+.gl-reach2__h { font-size: clamp(34px, 5.2vw, 50px); margin: 4px 0 6px; }
+.gl-reach2__sub { font-size: 14px; color: #8a7fa0; margin-top: -4px; }
+.gl-hwrap--dense .gl-hd { animation: glHdIn 0.45s ease-out forwards; }
+.gl-hwrap--dense .gl-hd { background: radial-gradient(circle at 38% 36%, #ffb1c8 0%, #ff5d8f 72%); }
+
+/* Editorial pullquote used on reach + still-growing. */
+.gl-quote { position: relative; max-width: 540px; margin: 6px auto 0; text-align: center; padding: 12px 14px 0; border-top: 1px solid rgba(120,92,160,0.18); }
+.gl-quote__t { font-family: 'Fraunces', serif; font-size: 19px; line-height: 1.35; color: #2a2342; margin: 0; font-style: italic; font-weight: 600; }
+.gl-quote__cite { display: block; font-style: normal; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8a7fa0; margin-top: 10px; }
+
+/* Engagement: Benable-vetting footer message (replaces the old engagements line). */
+.gl-eng-msg { max-width: 600px; margin: 20px auto 0; font-size: 15px; line-height: 1.45; color: #4a4258; }
+.gl-eng-msg b { color: #2a2342; font-weight: 800; }
+/* "This campaign" label is wider than "You" — give the label column room. */
+.gl-erbar__lbl { flex: 0 0 auto; min-width: 100px; }
+
+/* Wall of love — staggered pop-in for each card. */
+.gl-wall .gl-wcard { opacity: 0; transform: translateY(8px) rotate(var(--t)); animation: glWcardIn 0.42s cubic-bezier(.2,.85,.3,1.25) forwards; animation-delay: calc(var(--i, 0) * 35ms); }
+@keyframes glWcardIn { to { opacity: 1; transform: translateY(0) rotate(var(--t)); } }
+
+/* Still-growing slide */
+.gl-grow { gap: 12px; }
+.gl-grow__sub { max-width: 540px; font-size: 16px; color: #4a4258; }
+
+/* Closing — 'That's a wrap' + send-Katie-a-note mini CTA */
+.gl-close2 { gap: 14px; color: #fff; }
+.gl-close2__h { font-family: 'Fraunces', serif; font-weight: 700; font-style: italic; font-size: clamp(64px, 9vw, 110px); line-height: 0.94; letter-spacing: -0.02em; margin: 6px 0 0; color: #fff; }
+.gl-close2__h .gl-accent { background: linear-gradient(90deg, #ffd1ea, #cda9ff); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: italic; }
+.gl-close2__sub { max-width: 520px; font-size: 17px; color: #e7c9f0; margin: 0; }
+.gl-close2__cta { margin-top: 18px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.28); color: #fff; font-size: 14px; font-weight: 600; padding: 12px 22px; border-radius: 999px; cursor: pointer; transition: all 0.15s ease; }
+.gl-close2__cta:hover { background: rgba(255,255,255,0.22); }
+.gl-close2__form { margin-top: 18px; width: min(520px, 88%); display: flex; flex-direction: column; gap: 10px; }
+.gl-close2__ta { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.22); border-radius: 14px; padding: 14px 16px; color: #fff; font-family: inherit; font-size: 15px; line-height: 1.4; resize: vertical; }
+.gl-close2__ta::placeholder { color: rgba(255,255,255,0.5); }
+.gl-close2__ta:focus { outline: none; border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.12); }
+.gl-close2__row { display: flex; justify-content: flex-end; gap: 10px; }
+.gl-close2__cancel { background: transparent; border: 0; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; padding: 10px 14px; cursor: pointer; }
+.gl-close2__cancel:hover { color: #fff; }
+.gl-close2__send { background: linear-gradient(120deg, #ff7eb3, #a06bff); border: 0; color: #fff; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 999px; cursor: pointer; transition: transform 0.12s ease; }
+.gl-close2__send:disabled { opacity: 0.4; cursor: default; }
+.gl-close2__send:not(:disabled):hover { transform: scale(1.02); }
+.gl-close2__sent { margin-top: 20px; font-size: 16px; color: #ffd1ea; }

@@ -105,28 +105,23 @@ export function FloatingEmojis() {
 
 /* ============================ slides ============================ */
 
-/* Cover · B — stat tease (dark) */
+/* Cover · intro (no stats, no date — just a warm hand-off into the wrap). */
 export function Cover() {
   return (
     <div className="gl-slide gl-slide--center">
-      <span className="gl-eyebrow">{BRAND} · Campaign Wrapped</span>
-      <h1 className="gl-h1">Your campaign,<br /><span className="gl-accent">wrapped.</span></h1>
-      <div className="gl-tease">
-        <span><b>~{fmt(TOTALS.reach.base)}</b> reached</span><span className="gl-tease__dot">·</span>
-        <span><b>{TOTALS.viewER}%</b> ER</span><span className="gl-tease__dot">·</span>
-        <span><b>{WRAPPED_COMMENTS.length}</b> comments</span>
-      </div>
+      <span className="gl-eyebrow">{BRAND} · Campaign complete</span>
+      <h1 className="gl-h1">See how your <br /><span className="gl-accent">campaign did.</span></h1>
       <p className="gl-sub">{CAMPAIGN}</p>
     </div>
   );
 }
 
-/* Reach · C — heart of dots (clean hex lattice + soft sphere + pulse).
-   Denser lattice so each dot ≈ 10 people (≈470 dots for ~4.7K reach).
-   The dot count is approximate by design — the goal is a clean heart
-   shape, not an exact 1:1 people count. */
+/* Reach · brand-awareness reframe.
+   Tony's ask: each dot = ONE person, so the heart is many tiny dots.
+   Drop the platform chips. Add an editorial CMO-style quote underneath
+   to land that this top-of-funnel awareness compounds. */
 const HEART = (() => {
-  const pts = []; const step = 0.088; let row = 0;
+  const pts = []; const step = 0.028; let row = 0;
   const sx = 150, sy = 112, cx = 220, cy = 168;
   for (let y = 1.3; y >= -1.28; y -= step, row += 1) {
     const xoff = row % 2 ? step / 2 : 0;
@@ -137,33 +132,30 @@ const HEART = (() => {
   }
   return pts;
 })();
-const HEART_DOT = 8;
-const PEOPLE_PER_DOT = 10;
+const HEART_DOT = 3;
+const PEOPLE_PER_DOT = 1;
 
 export function Reach() {
   const play = usePlayOnMount();
-  const reach = useCountUp(TOTALS.reach.base, { dur: 1900, play });
+  // Tony asked for the highest estimate, not the base, and 'over X' framing.
+  const total = TOTALS.reach.high;
   return (
-    <div className="gl-slide gl-slide--center">
-      <span className="gl-eyebrow">You reached</span>
-      <div className="gl-reach-num">≈ {Number(reach).toLocaleString()}</div>
-      <div className={`gl-hwrap ${play ? 'play' : ''}`} aria-hidden="true">
-        {HEART.map((p, i) => {
-          const cd = Math.hypot(p[2], p[3] - 0.2);
-          const del = (0.25 + cd * 0.5);
-          return (
-            <span key={i} className="gl-hd" style={{
-              left: `${p[0]}px`, top: `${p[1]}px`, width: `${HEART_DOT}px`, height: `${HEART_DOT}px`,
-              animationDelay: `${del.toFixed(2)}s, ${(del + 0.5).toFixed(2)}s`,
-            }} />
-          );
-        })}
+    <div className="gl-slide gl-slide--center gl-reach2">
+      <span className="gl-eyebrow">Brand awareness</span>
+      <h2 className="gl-h2 gl-reach2__h">Over <span className="gl-accent">{fmt(total)} people</span><br />noticed your brand.</h2>
+      <div className={`gl-hwrap gl-hwrap--dense ${play ? 'play' : ''}`} aria-hidden="true">
+        {HEART.map((p, i) => (
+          <span key={i} className="gl-hd" style={{
+            left: `${p[0]}px`, top: `${p[1]}px`, width: `${HEART_DOT}px`, height: `${HEART_DOT}px`,
+            animationDelay: `${((i % 80) * 6).toFixed(0)}ms`,
+          }} />
+        ))}
       </div>
-      <p className="gl-sub">each dot ≈ {PEOPLE_PER_DOT} people</p>
-      <div className="gl-chips">
-        <span className="gl-chip"><span className="gl-chip__ic gl-chip__ic--tt"><TtGlyph /></span>TikTok <b>{TT_PCT}%</b></span>
-        <span className="gl-chip"><span className="gl-chip__ic gl-chip__ic--ig"><IgGlyph /></span>Instagram <b>{IG_PCT}%</b></span>
-      </div>
+      <p className="gl-sub gl-reach2__sub">each dot is one person</p>
+      <blockquote className="gl-quote">
+        <p className="gl-quote__t">Awareness is the foundation of every marketing funnel. Every impression compounds — they're the seeds of tomorrow's customers.</p>
+        <cite className="gl-quote__cite">— Marketing Lab, Brand Growth Report</cite>
+      </blockquote>
     </div>
   );
 }
@@ -190,7 +182,7 @@ export function Engagement() {
       {/* You vs. industry-average comparison — the powerful proof */}
       <div className={`gl-erbar ${on}`}>
         <div className="gl-erbar__row">
-          <span className="gl-erbar__lbl">You</span>
+          <span className="gl-erbar__lbl">This campaign</span>
           <span className="gl-erbar__track">
             <span className="gl-erbar__fill gl-erbar__fill--you" style={{ '--w': `${youPct}%` }}>{er}%</span>
           </span>
@@ -211,7 +203,6 @@ export function Engagement() {
               <span key={c.handle} className="gl-eng-face" style={{ backgroundImage: `url(${c.pic})` }} />
             ))}
           </span>
-          <span className="gl-eng-faces__cap"><b>{TOTALS.creators} handpicked creators</b> made it happen</span>
         </div>
         <div className="gl-eng-quotes">
           {ENG_QUOTES.map((c) => (
@@ -223,7 +214,10 @@ export function Engagement() {
         </div>
       </div>
 
-      <p className="gl-sub">{TOTALS.engagements} engagements · likes, comments &amp; shares on {fmt(TOTALS.observedViews)} views</p>
+      <p className="gl-eng-msg">
+        Because of Benable's sourcing and vetting of creators with high engagement,
+        <b> over 600 people</b> liked, commented, shared, or bookmarked on {fmt(TOTALS.observedViews)} views.
+      </p>
     </div>
   );
 }
@@ -250,15 +244,19 @@ export function Comments() {
   );
 }
 
-/* Comments · A — collage wall */
+/* Comments · the wall of love — fixed cards (readable), staggered pop-in. */
 const WALL_TILT = ['-2deg', '1.5deg', '-1.2deg', '2deg', '-1.6deg', '1deg'];
 export function CommentsWall() {
+  const play = usePlayOnMount();
   return (
-    <div className="gl-slide">
-      <div className="gl-cnt-head"><span className="gl-eyebrow">Every single one</span><h2 className="gl-h2">The <span className="gl-accent">wall of love.</span></h2></div>
+    <div className={`gl-slide ${play ? 'play' : ''}`}>
+      <div className="gl-cnt-head">
+        <span className="gl-eyebrow">Real excitement, great engagement</span>
+        <h2 className="gl-h2">The <span className="gl-accent">wall of love.</span></h2>
+      </div>
       <div className="gl-wall">
         {WRAPPED_COMMENTS.map((c, i) => (
-          <div key={i} className="gl-wcard" style={{ '--t': WALL_TILT[i % WALL_TILT.length] }}>
+          <div key={i} className="gl-wcard" style={{ '--t': WALL_TILT[i % WALL_TILT.length], '--i': i }}>
             <span className={`gl-wcard__plat ${c.p === 'tt' ? 'tt' : 'ig'}`}><PlatGlyph p={c.p} /></span>
             <div className="gl-wcard__row">
               <span className="gl-wcard__av" style={{ background: avColor(c.u) }}>{c.u[0].toUpperCase()}</span>
@@ -285,7 +283,7 @@ export function Content() {
   const loop = [...ALL_POSTS, ...ALL_POSTS];
   return (
     <div className="gl-slide gl-content">
-      <div className="gl-cnt-head"><span className="gl-eyebrow">The content they made</span><h2 className="gl-h2"><span className="gl-accent">{TOTALS.pieces} pieces</span> of glow.</h2></div>
+      <div className="gl-cnt-head"><span className="gl-eyebrow">A seamless experience</span><h2 className="gl-h2"><span className="gl-accent">{TOTALS.pieces} new pieces</span><br />about your brand.</h2></div>
       <div className="gl-marquee">
         <div className="gl-marquee__track">
           {loop.map((p, i) => {
@@ -361,24 +359,83 @@ export function Creators() {
   );
 }
 
-/* Note from Katie · A — handwritten postcard */
+/* Note from Katie · handwritten postcard, warm first-campaign hand-off. */
 export function Katie() {
   return (
     <div className="gl-slide gl-slide--center">
-      <span className="gl-eyebrow">A note from your Benable strategist</span>
+      <span className="gl-eyebrow">A note from Katie</span>
       <div className="gl-postcard">
         <span className="gl-postcard__tape" />
-        <p className="gl-postcard__msg">Hi {BRAND} team — what a glow-up! Your creators pulled a <b>{TOTALS.viewER}%</b> engagement rate, 5× the benchmark, and the comments were pure love. So proud of this one — already dreaming up round two. ♥</p>
+        <p className="gl-postcard__msg">Hi {BRAND} team — what a first campaign. Your creators were genuinely excited about your brand, which we don't always see. We'll keep tuning the experience as we get to know you better. Don't ever hesitate to reach out with feedback, ideas, or anything. Personally so excited to be in this with you. ♥</p>
         <div className="gl-postcard__sign">
           <span className="gl-postcard__av">K</span>
-          <div><b>Katie</b><small>your Benable strategist</small></div>
+          <div>
+            <b>Katie</b>
+            <small>Head of Brand Partnerships · your personal concierge</small>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/* Recap · D2 — editorial dark */
+/* "It's still growing" — this campaign isn't over yet. CMO-style quote
+   landing the half-of-the-value-comes-after framing. */
+export function StillGrowing() {
+  return (
+    <div className="gl-slide gl-slide--center gl-grow">
+      <span className="gl-eyebrow">And this is just the start</span>
+      <h2 className="gl-h2">Your content is <span className="gl-accent">still growing.</span></h2>
+      <p className="gl-sub gl-grow__sub">All of this content is less than two weeks old — and it keeps working for you long after the campaign ends.</p>
+      <blockquote className="gl-quote">
+        <p className="gl-quote__t">Roughly half the value of a creator campaign comes from the months after launch. Evergreen content is the gift that keeps giving.</p>
+        <cite className="gl-quote__cite">— CMO, B2C consumer brand</cite>
+      </blockquote>
+    </div>
+  );
+}
+
+/* Final piece-out — pure feel-good, optional 'send Katie a note' mini-CTA
+   (business/feedback box, no thank-you styling). No upsell. */
+export function WrapClose() {
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState('');
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="gl-slide gl-slide--center gl-close2">
+      <span className="gl-eyebrow">{BRAND}</span>
+      <h2 className="gl-close2__h">That's a <em className="gl-accent">wrap.</em></h2>
+      <p className="gl-close2__sub">Thank you for trusting us with your first campaign.</p>
+
+      {!open && !sent && (
+        <button type="button" className="gl-close2__cta" onClick={() => setOpen(true)}>
+          Have a question or feedback? Send a note to Katie →
+        </button>
+      )}
+      {open && !sent && (
+        <div className="gl-close2__form">
+          <textarea
+            className="gl-close2__ta"
+            placeholder={`What's on your mind, ${BRAND.split(' ')[0]} team?`}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={4}
+            autoFocus
+          />
+          <div className="gl-close2__row">
+            <button type="button" className="gl-close2__cancel" onClick={() => { setOpen(false); setNote(''); }}>Cancel</button>
+            <button type="button" className="gl-close2__send" disabled={!note.trim()} onClick={() => setSent(true)}>Send to Katie →</button>
+          </div>
+        </div>
+      )}
+      {sent && (
+        <p className="gl-close2__sent">Sent to Katie. She'll be in touch. ♥</p>
+      )}
+    </div>
+  );
+}
+
+/* Recap · D2 — editorial dark (kept defined for reuse, cut from V1 SLIDES) */
 export function Recap({ onCta }) {
   const ledger = [
     [`~${fmt(TOTALS.reach.base)}`, 'reach'],
@@ -443,17 +500,17 @@ export function Thanks() {
   );
 }
 
+/* V1 order (Tony pass): cover → content (early hook) → reach → engagement
+   → wall of love → Katie → still growing → that's a wrap.
+   Creators, thanks polaroids, and the recap-stats slide are cut from V1. */
 export const SLIDES = [
   { key: 'cover', grad: 'dark', dark: true, Body: Cover },
-  { key: 'reach', grad: 'b', Body: Reach },
-  // Engagement is the one slide that keeps the floating emojis for now.
-  { key: 'engagement', grad: 'c', emoji: true, Body: Engagement },
-  // Removed the redundant phone-feed comments slide — the wall of love
-  // (Katie's favorite) is the single comments moment.
-  { key: 'comments-wall', grad: 'e', Body: CommentsWall },
   { key: 'content', grad: 'f', Body: Content },
-  { key: 'creators', grad: 'g', Body: Creators },
-  { key: 'thanks', grad: 'h', Body: Thanks },
+  { key: 'reach', grad: 'b', Body: Reach },
+  // Engagement is the one slide that keeps the floating emojis.
+  { key: 'engagement', grad: 'c', emoji: true, Body: Engagement },
+  { key: 'comments-wall', grad: 'e', Body: CommentsWall },
   { key: 'note', grad: 'a', Body: Katie },
-  { key: 'recap', grad: 'dark', dark: true, Body: Recap },
+  { key: 'growing', grad: 'h', Body: StillGrowing },
+  { key: 'wrapclose', grad: 'dark', dark: true, Body: WrapClose },
 ];
