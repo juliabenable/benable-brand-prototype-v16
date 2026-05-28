@@ -63,8 +63,16 @@ export default function GlowLoveWrap({ onBack, embedded = false }) {
 
         {!isLast && (
           <>
-            <button type="button" className="gl-arrow gl-arrow--prev" onClick={prev} disabled={index === 0} aria-label="Previous slide">‹</button>
-            <button type="button" className="gl-arrow gl-arrow--next" onClick={next} aria-label="Next slide">›</button>
+            <button type="button" className="gl-arrow gl-arrow--prev" onClick={prev} disabled={index === 0} aria-label="Previous slide">
+              <svg className="gl-arrow__svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="14.5 18 8.5 12 14.5 6" />
+              </svg>
+            </button>
+            <button type="button" className="gl-arrow gl-arrow--next" onClick={next} aria-label="Next slide">
+              <svg className="gl-arrow__svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="9.5 18 15.5 12 9.5 6" />
+              </svg>
+            </button>
           </>
         )}
       </div>
