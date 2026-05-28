@@ -275,8 +275,14 @@
 
 /* Comments · collage wall */
 .gl-slide:has(.gl-wall) { position: relative; overflow: hidden; }
-/* Clean grid layout — predictable rows/columns, no CSS-multicolumn weirdness. */
-.gl-wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 920px; width: 100%; margin: 0 auto; max-height: 460px; overflow: hidden; align-content: start; }
+/* Clean grid layout — predictable rows/columns, no CSS-multicolumn weirdness.
+   The bottom of the wall fades into whatever's behind it via mask-image
+   (rather than an overlay painted on top), so the cards melt cleanly into
+   the slide gradient regardless of the bg color. */
+.gl-wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 920px; width: 100%; margin: 0 auto; max-height: 500px; overflow: hidden; align-content: start;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+}
 .gl-wcard { position: relative; background: #fff; border-radius: 14px; padding: 11px 12px;
   box-shadow: 0 8px 20px rgba(80,50,90,0.1); transform: rotate(var(--t)); }
 .gl-wcard__plat { position: absolute; top: 9px; right: 9px; width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; }
@@ -285,8 +291,9 @@
 .gl-wcard__av { width: 30px; height: 30px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
 .gl-wcard__u { font-size: 11.5px; font-weight: 600; color: #9a948b; }
 .gl-wcard__t { font-size: 13px; line-height: 1.35; color: #1a1a1a; margin-top: 1px; }
-.gl-wall__fade { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; pointer-events: none; z-index: 5;
-  background: linear-gradient(transparent, rgba(243,236,250,0.92)); }
+/* Bottom fade is now handled by the mask-image on .gl-wall itself, so this
+   sibling overlay isn't needed. Kept as a no-op to avoid touching the JSX. */
+.gl-wall__fade { display: none; }
 
 /* Creators · relationship cards (no ranking) */
 .gl-rcard { position: relative; background: linear-gradient(165deg,#fff 0%,#fff4f8 55%,#f3edff 100%);
