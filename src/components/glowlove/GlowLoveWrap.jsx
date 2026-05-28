@@ -53,27 +53,25 @@ export default function GlowLoveWrap({ onBack, embedded = false }) {
 
           <div className="gl-body" key={slide.key}><Body onCta={() => onBack && onBack('Dashboard')} /></div>
 
+          {/* Prev tap zone stays available even on the last slide so the
+              viewer can step back through the deck after reaching the end. */}
+          <button type="button" className="gl-tap gl-tap--prev" onClick={prev} aria-label="Previous" tabIndex={-1} />
           {!isLast && (
-            <>
-              <button type="button" className="gl-tap gl-tap--prev" onClick={prev} aria-label="Previous" tabIndex={-1} />
-              <button type="button" className="gl-tap gl-tap--next" onClick={next} aria-label="Next" tabIndex={-1} />
-            </>
+            <button type="button" className="gl-tap gl-tap--next" onClick={next} aria-label="Next" tabIndex={-1} />
           )}
         </article>
 
+        <button type="button" className="gl-arrow gl-arrow--prev" onClick={prev} disabled={index === 0} aria-label="Previous slide">
+          <svg className="gl-arrow__svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="14.5 18 8.5 12 14.5 6" />
+          </svg>
+        </button>
         {!isLast && (
-          <>
-            <button type="button" className="gl-arrow gl-arrow--prev" onClick={prev} disabled={index === 0} aria-label="Previous slide">
-              <svg className="gl-arrow__svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polyline points="14.5 18 8.5 12 14.5 6" />
-              </svg>
-            </button>
-            <button type="button" className="gl-arrow gl-arrow--next" onClick={next} aria-label="Next slide">
-              <svg className="gl-arrow__svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polyline points="9.5 18 15.5 12 9.5 6" />
-              </svg>
-            </button>
-          </>
+          <button type="button" className="gl-arrow gl-arrow--next" onClick={next} aria-label="Next slide">
+            <svg className="gl-arrow__svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="9.5 18 15.5 12 9.5 6" />
+            </svg>
+          </button>
         )}
       </div>
     </div>
