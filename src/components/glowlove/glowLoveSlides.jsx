@@ -105,13 +105,16 @@ export function FloatingEmojis() {
 
 /* ============================ slides ============================ */
 
-/* Cover · intro (no stats, no date — just a warm hand-off into the wrap). */
+/* Cover · intro (no stats, no date — just a warm hand-off into the wrap).
+   Carries the brand + campaign-complete breadcrumb in the eyebrow, the
+   wrap-intro headline, the instructional subtitle, and the campaign name. */
 export function Cover() {
   return (
     <div className="gl-slide gl-slide--center">
       <span className="gl-eyebrow">{BRAND} · Campaign complete</span>
       <h1 className="gl-h1">Your campaign report<br /><span className="gl-accent">is ready.</span></h1>
       <p className="gl-sub">Check out your results and highlights.</p>
+      <p className="gl-cover__campaign">{CAMPAIGN}</p>
     </div>
   );
 }

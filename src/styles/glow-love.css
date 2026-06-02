@@ -259,10 +259,14 @@
 .gl-stage--dark .gl-eyebrow { color: #ffd1ea; }
 .gl-stage--dark .gl-sub { color: #e7c9f0; }
 
-/* Cover · stat tease */
+/* Cover · stat tease (legacy, kept in case any non-Glow-Love deck reuses it) */
 .gl-tease { display: flex; gap: 14px; align-items: center; justify-content: center; margin-top: 24px; font-size: 16px; color: #e7c9f0; }
 .gl-tease b { color: #fff; font-weight: 800; font-size: 21px; }
 .gl-tease__dot { opacity: 0.4; }
+/* Campaign-name line under the cover subtitle. Italic + muted so it
+   grounds the report in what the campaign was, without competing
+   with the headline. */
+.gl-cover__campaign { font-family: 'Instrument Serif', 'Fraunces', serif; font-style: italic; font-size: 17px; line-height: 1.3; color: #c3a3e0; margin-top: 18px; max-width: 540px; }
 
 /* Reach · heart of dots */
 .gl-reach-num { font-size: clamp(40px, 6vw, 60px); font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 6px 0 0;
