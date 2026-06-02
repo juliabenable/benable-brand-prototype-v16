@@ -110,8 +110,8 @@ export function Cover() {
   return (
     <div className="gl-slide gl-slide--center">
       <span className="gl-eyebrow">{BRAND} · Campaign complete</span>
-      <h1 className="gl-h1">See how your <br /><span className="gl-accent">campaign did.</span></h1>
-      <p className="gl-sub">{CAMPAIGN}</p>
+      <h1 className="gl-h1">Your campaign report<br /><span className="gl-accent">is ready.</span></h1>
+      <p className="gl-sub">Check out your results and highlights.</p>
     </div>
   );
 }
