@@ -311,35 +311,42 @@ export function Content() {
   );
 }
 
-/* Content · alt — one-at-a-time spotlight crossfade. Each piece takes
-   center stage for a beat, then fades out as the next fades in. Loops
-   gracefully whether the campaign has 3 pieces or 30. */
-const SPOTLIGHT_MS = 2600;
+/* Content · carousel — pieces slide horizontally through center, the
+   active one big and sharp, neighbors peeking smaller and faded on each
+   side. Much more dynamic than a crossfade — you can SEE the strip moving. */
+const CAROUSEL_MS = 2800;
+const TILE_W = 260;
+const TILE_GAP = 28;
 export function ContentSpotlight() {
   const posts = ALL_POSTS;
   const [idx, setIdx] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % posts.length), SPOTLIGHT_MS);
+    const id = setInterval(() => setIdx((i) => (i + 1) % posts.length), CAROUSEL_MS);
     return () => clearInterval(id);
   }, [posts.length]);
   const current = posts[idx];
-  const [pc, label] = PLAT_META[current.plat] || PLAT_META.TikTok;
+  const [, label] = PLAT_META[current.plat] || PLAT_META.TikTok;
   return (
     <div className="gl-slide gl-slide--center gl-content2">
       <div className="gl-cnt-head"><span className="gl-eyebrow">A seamless experience</span><h2 className="gl-h2"><span className="gl-accent">{TOTALS.pieces} new pieces</span><br />about your brand.</h2></div>
-      <div className="gl-spotlight">
-        {posts.map((p, i) => {
-          const [pcI, labelI] = PLAT_META[p.plat] || PLAT_META.TikTok;
-          return (
-            <div key={i} className={`gl-spot ${i === idx ? 'on' : ''}`} aria-hidden={i !== idx}>
-              <span className="gl-spot__img" style={{ backgroundImage: `url(${p.img})` }} />
-              <span className={`gl-spot__plat gl-spot__plat--${pcI}`}><PlatGlyph p={pcI} /> {labelI}</span>
-            </div>
-          );
-        })}
+      <div className="gl-carousel">
+        <div
+          className="gl-carousel__track"
+          style={{ transform: `translateX(calc(50% - ${TILE_W / 2}px - ${idx * (TILE_W + TILE_GAP)}px))` }}
+        >
+          {posts.map((p, i) => {
+            const [pcI, labelI] = PLAT_META[p.plat] || PLAT_META.TikTok;
+            return (
+              <div key={i} className={`gl-cart ${i === idx ? 'on' : ''}`} aria-hidden={i !== idx}>
+                <span className="gl-cart__img" style={{ backgroundImage: `url(${p.img})` }} />
+                <span className={`gl-cart__plat gl-cart__plat--${pcI}`}><PlatGlyph p={pcI} /> {labelI}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      {/* Creator + counter sit OUTSIDE the crossfading stack so the eye stays
-          locked on a single name area while the image swaps behind. */}
+      {/* Creator + counter sit BELOW the carousel so the eye has a calm
+          anchor while the strip glides through center. */}
       <div className="gl-spot__meta">
         <span className="gl-spot__av" style={{ backgroundImage: `url(${current.creator.pic})` }} />
         <div className="gl-spot__id"><b>{current.creator.name}</b><small>{current.creator.handle} · {label}</small></div>
