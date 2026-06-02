@@ -311,11 +311,12 @@ export function Content() {
   );
 }
 
-/* Content · carousel — pieces slide horizontally through center, the
-   active one big and sharp, neighbors peeking smaller and faded on each
-   side. Much more dynamic than a crossfade — you can SEE the strip moving. */
+/* Content · carousel — pieces glide horizontally through center, the
+   active one full size + sharp, neighbors peeking smaller and faded.
+   Each tile is rectangular (4/5) with the creator name pill attached at
+   the bottom, like the original marquee tiles. */
 const CAROUSEL_MS = 2800;
-const TILE_W = 260;
+const TILE_W = 230;
 const TILE_GAP = 28;
 export function ContentSpotlight() {
   const posts = ALL_POSTS;
@@ -324,11 +325,11 @@ export function ContentSpotlight() {
     const id = setInterval(() => setIdx((i) => (i + 1) % posts.length), CAROUSEL_MS);
     return () => clearInterval(id);
   }, [posts.length]);
-  const current = posts[idx];
-  const [, label] = PLAT_META[current.plat] || PLAT_META.TikTok;
   return (
     <div className="gl-slide gl-slide--center gl-content2">
-      <div className="gl-cnt-head"><span className="gl-eyebrow">A seamless experience</span><h2 className="gl-h2"><span className="gl-accent">{TOTALS.pieces} new pieces</span><br />about your brand.</h2></div>
+      <div className="gl-cnt-head">
+        <h2 className="gl-h2 gl-content2__h"><span className="gl-accent">{TOTALS.pieces} new pieces</span> about your brand.</h2>
+      </div>
       <div className="gl-carousel">
         <div
           className="gl-carousel__track"
@@ -340,16 +341,14 @@ export function ContentSpotlight() {
               <div key={i} className={`gl-cart ${i === idx ? 'on' : ''}`} aria-hidden={i !== idx}>
                 <span className="gl-cart__img" style={{ backgroundImage: `url(${p.img})` }} />
                 <span className={`gl-cart__plat gl-cart__plat--${pcI}`}><PlatGlyph p={pcI} /> {labelI}</span>
+                <span className="gl-cart__tag">
+                  <span className="gl-cart__av" style={{ backgroundImage: `url(${p.creator.pic})` }} />
+                  <span className="gl-cart__name"><b>{p.creator.name}</b><small>{p.creator.handle}</small></span>
+                </span>
               </div>
             );
           })}
         </div>
-      </div>
-      {/* Creator + counter sit BELOW the carousel so the eye has a calm
-          anchor while the strip glides through center. */}
-      <div className="gl-spot__meta">
-        <span className="gl-spot__av" style={{ backgroundImage: `url(${current.creator.pic})` }} />
-        <div className="gl-spot__id"><b>{current.creator.name}</b><small>{current.creator.handle} · {label}</small></div>
       </div>
       <div className="gl-spot__count">{idx + 1} <span>/ {posts.length}</span></div>
     </div>

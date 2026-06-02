@@ -455,17 +455,18 @@
 .gl-close2__sent { margin-top: 20px; font-size: 16px; color: #ffd1ea; }
 
 /* ---------- Content · carousel (alt design) ----------
-   Horizontal strip of tiles slides through center. Active tile is full
-   size and sharp; neighbors peek smaller, faded, slightly desaturated.
-   The whole track translates so each tile glides into the spotlight. */
-.gl-content2 { gap: 10px; align-items: stretch; }
+   Horizontal strip of rectangular (4/5) tiles slides through center.
+   Active tile is full size + sharp; neighbors peek smaller, faded,
+   desaturated. Each tile carries its own creator pill at the bottom. */
+.gl-content2 { gap: 6px; align-items: stretch; }
+/* Compact title — no eyebrow, single-line h2, dialed-down size. */
+.gl-content2__h { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; margin: 4px 0 0; }
 .gl-carousel {
   position: relative;
   width: 100%;
-  height: 320px;
-  margin: 4px 0 0;
+  height: 340px;
+  margin: 0;
   overflow: hidden;
-  /* Fade the side edges so tiles dissolve in/out as they enter/leave. */
   -webkit-mask: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
           mask: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
 }
@@ -474,15 +475,16 @@
   gap: 28px;
   height: 100%;
   align-items: center;
-  padding: 12px 0;
+  padding: 14px 0;
   transition: transform 0.85s cubic-bezier(.42,0,.18,1);
   will-change: transform;
 }
+/* Rectangular 4/5 portrait tiles (like the original marquee posts). */
 .gl-cart {
-  flex: 0 0 260px;
-  height: 260px;
+  flex: 0 0 230px;
+  aspect-ratio: 4 / 5;
   position: relative;
-  border-radius: 22px;
+  border-radius: 20px;
   transition: transform 0.85s cubic-bezier(.42,0,.18,1), opacity 0.85s ease, filter 0.85s ease;
   transform: scale(0.74);
   opacity: 0.42;
@@ -496,16 +498,32 @@
 .gl-cart__img {
   display: block; width: 100%; height: 100%;
   background: #ccc center/cover no-repeat;
-  border-radius: 22px;
+  border-radius: 20px;
   box-shadow: 0 22px 50px rgba(80,50,110,0.32);
 }
 .gl-cart__plat {
-  position: absolute; top: 12px; right: 12px;
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 12px; font-weight: 700; color: #fff;
-  background: rgba(20,12,30,0.6); padding: 5px 11px; border-radius: 999px;
+  position: absolute; top: 10px; right: 10px;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700; color: #fff;
+  background: rgba(20,12,30,0.6); padding: 4px 9px; border-radius: 999px;
   backdrop-filter: blur(3px);
 }
+/* Creator pill attached at the bottom of the tile — small. */
+.gl-cart__tag {
+  position: absolute; left: 7px; right: 7px; bottom: 7px;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.94);
+  border-radius: 11px;
+  padding: 4px 8px 4px 4px;
+  box-shadow: 0 5px 14px rgba(80,50,110,0.2);
+}
+.gl-cart__av {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #ccc center/cover no-repeat; flex: 0 0 auto;
+}
+.gl-cart__name { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+.gl-cart__name b { font-size: 10.5px; font-weight: 700; color: #2a2342; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gl-cart__name small { font-size: 9px; color: #8a7fa0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .gl-spot__meta {
   display: flex; align-items: center; gap: 10px;
   background: rgba(255,255,255,0.86);
