@@ -468,47 +468,49 @@
    purple letters don't get cut off at the bottom. */
 .gl-content2__h { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.25; padding-bottom: 0.12em; margin: 4px 0 0; }
 .gl-content2__h .gl-accent { display: inline-block; padding-bottom: 0.08em; }
+/* 3D coverflow stage. Cards live as absolute children with per-card
+   transforms (set inline from the React component) arranging them on a
+   horizontal arc. The carousel sets the perspective. Mask fades both the
+   side edges AND the bottom 22%, so the purple glow under each card
+   melts into the slide gradient rather than getting hard-cut. */
 .gl-carousel {
   position: relative;
   width: 100%;
-  height: 380px;
+  height: 420px;
   margin: 0;
   overflow: hidden;
-  -webkit-mask: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
-          mask: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-image:
+    linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+          mask-composite: intersect;
 }
-.gl-carousel__track {
-  display: flex;
-  gap: 28px;
-  height: 100%;
-  align-items: center;
-  padding: 14px 0;
-  transition: transform 0.85s cubic-bezier(.42,0,.18,1);
-  will-change: transform;
-}
-/* Snap-class: applied for one frame when the infinite loop jumps back to
-   its equivalent middle-copy position. We disable BOTH the track's
-   transform transition AND the tiles' scale/opacity transitions so the
-   whole carousel snaps as one frozen frame (otherwise the newly-centered
-   tile would visibly pop from small → large). */
-.gl-carousel__track--snap,
-.gl-carousel__track--snap .gl-cart { transition: none !important; }
-/* Real portrait tiles (9/16, the actual reel/TikTok ratio). */
+/* Snap-class: applied for one frame when the infinite loop jumps back
+   to the equivalent middle-copy position. Disables tile transitions so
+   the snap is invisible. */
+.gl-carousel--snap .gl-cart { transition: none !important; }
+/* Coverflow cards — anchored to carousel center, transform inline. */
 .gl-cart {
-  flex: 0 0 180px;
-  aspect-ratio: 9 / 16;
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 180px;
+  height: 320px;
+  margin-left: -90px;
+  margin-top: -160px;
   border-radius: 20px;
-  transition: transform 0.85s cubic-bezier(.42,0,.18,1), opacity 0.85s ease, filter 0.85s ease;
-  transform: scale(0.74);
-  opacity: 0.42;
-  filter: saturate(0.78);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: transform 0.7s cubic-bezier(.4,0,.2,1), opacity 0.7s ease, filter 0.7s ease;
+  will-change: transform, opacity, filter;
 }
-.gl-cart.on {
-  transform: scale(1.04);
-  opacity: 1;
-  filter: saturate(1);
-}
+/* Active (foreground) card carries a deeper purple glow than the rest. */
+.gl-cart.on .gl-cart__img { box-shadow: 0 30px 70px rgba(80,50,110,0.45); }
 .gl-cart__img {
   display: block; width: 100%; height: 100%;
   background: #ccc center/cover no-repeat;

@@ -314,21 +314,38 @@ export function Content() {
   );
 }
 
-/* Content · infinite carousel — pieces glide horizontally through center
-   forever. We render the post list TRIPLED so the user can see motion in
-   both directions; when we reach the third copy we silently snap back to
-   the equivalent position in the middle copy (no transition for that one
-   frame), so the loop is seamless. */
-const CAROUSEL_MS = 2800;
-const TRANS_MS = 850;
-const TILE_W = 180;
-const TILE_GAP = 28;
+/* Content · 3D coverflow carousel — cards live on a circular arc with
+   the active one in the foreground; neighbors curve away into the
+   background. Tripled-list + silent snap-back gives an infinite loop. */
+const CAROUSEL_MS = 1800;
+const TRANS_MS = 700;
+const VISIBLE_RANGE = 4; // cards rendered on each side of the active
+
+function cartStyle(dist) {
+  const abs = Math.abs(dist);
+  if (abs > VISIBLE_RANGE + 1) return { opacity: 0, pointerEvents: 'none' };
+  // Horizontal sweep — tighter near the center, wider further out.
+  const tx = Math.sign(dist) * (abs === 0 ? 0 : 100 + (abs - 1) * 82);
+  // Push neighbors back in Z so the active card reads as foreground.
+  const tz = -Math.min(abs, VISIBLE_RANGE) * 110;
+  // Y-axis rotation — neighbors angle toward the active card.
+  const ry = Math.sign(dist) * Math.min(abs, VISIBLE_RANGE) * 32;
+  const scale = abs === 0 ? 1.05 : Math.max(0.55, 1 - abs * 0.12);
+  const opacity = abs === 0 ? 1 : Math.max(0.32, 1 - abs * 0.2);
+  // Background cards get desaturated so the foreground one really pops.
+  const filter = abs === 0 ? 'none' : `saturate(${Math.max(0.55, 1 - abs * 0.15)})`;
+  return {
+    transform: `translate3d(${tx}px, 0, ${tz}px) rotateY(${-ry}deg) scale(${scale})`,
+    opacity,
+    filter,
+    zIndex: 100 - abs,
+  };
+}
+
 export function ContentSpotlight() {
   const posts = ALL_POSTS;
   const N = posts.length;
   const tripled = useMemo(() => [...posts, ...posts, ...posts], [posts]);
-  // virtual index drifts forward indefinitely; we snap it back into the
-  // middle copy whenever it crosses into the third copy.
   const [vIdx, setVIdx] = useState(N);
   const [snapping, setSnapping] = useState(false);
 
@@ -339,11 +356,9 @@ export function ContentSpotlight() {
 
   useEffect(() => {
     if (vIdx >= 2 * N) {
-      // After the transition finishes, jump back by N without animation.
       const t = setTimeout(() => {
         setSnapping(true);
         setVIdx((i) => i - N);
-        // Re-enable the transition after the snap has been painted.
         requestAnimationFrame(() => requestAnimationFrame(() => setSnapping(false)));
       }, TRANS_MS + 30);
       return () => clearTimeout(t);
@@ -358,25 +373,22 @@ export function ContentSpotlight() {
       <div className="gl-cnt-head">
         <h2 className="gl-h2 gl-content2__h"><span className="gl-accent">{TOTALS.pieces} new pieces</span> about your brand.</h2>
       </div>
-      <div className="gl-carousel">
-        <div
-          className={`gl-carousel__track ${snapping ? 'gl-carousel__track--snap' : ''}`}
-          style={{ transform: `translateX(calc(50% - ${TILE_W / 2}px - ${vIdx * (TILE_W + TILE_GAP)}px))` }}
-        >
-          {tripled.map((p, i) => {
-            const [pcI, labelI] = PLAT_META[p.plat] || PLAT_META.TikTok;
-            return (
-              <div key={i} className={`gl-cart ${i === vIdx ? 'on' : ''}`}>
-                <span className="gl-cart__img" style={{ backgroundImage: `url(${p.img})` }} />
-                <span className={`gl-cart__plat gl-cart__plat--${pcI}`}><PlatGlyph p={pcI} /> {labelI}</span>
-                <span className="gl-cart__tag">
-                  <span className="gl-cart__av" style={{ backgroundImage: `url(${p.creator.pic})` }} />
-                  <span className="gl-cart__name"><b>{p.creator.name}</b><small>{p.creator.handle}</small></span>
-                </span>
-              </div>
-            );
-          })}
-        </div>
+      <div className={`gl-carousel ${snapping ? 'gl-carousel--snap' : ''}`}>
+        {tripled.map((p, i) => {
+          const dist = i - vIdx;
+          if (Math.abs(dist) > VISIBLE_RANGE + 1) return null;
+          const [pcI, labelI] = PLAT_META[p.plat] || PLAT_META.TikTok;
+          return (
+            <div key={i} className={`gl-cart ${i === vIdx ? 'on' : ''}`} style={cartStyle(dist)}>
+              <span className="gl-cart__img" style={{ backgroundImage: `url(${p.img})` }} />
+              <span className={`gl-cart__plat gl-cart__plat--${pcI}`}><PlatGlyph p={pcI} /> {labelI}</span>
+              <span className="gl-cart__tag">
+                <span className="gl-cart__av" style={{ backgroundImage: `url(${p.creator.pic})` }} />
+                <span className="gl-cart__name"><b>{p.creator.name}</b><small>{p.creator.handle}</small></span>
+              </span>
+            </div>
+          );
+        })}
       </div>
       <div className="gl-spot__count">{displayIdx + 1} <span>/ {N}</span></div>
     </div>
