@@ -458,13 +458,16 @@
    Horizontal strip of rectangular (4/5) tiles slides through center.
    Active tile is full size + sharp; neighbors peek smaller, faded,
    desaturated. Each tile carries its own creator pill at the bottom. */
-.gl-content2 { gap: 6px; align-items: stretch; }
-/* Compact title — no eyebrow, single-line h2, dialed-down size. */
-.gl-content2__h { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; margin: 4px 0 0; }
+.gl-content2 { gap: 8px; align-items: stretch; }
+/* Compact title — single-line h2, line-height + padding-bottom give the
+   gradient-clipped accent ("13 new pieces") room for descenders so the
+   purple letters don't get cut off at the bottom. */
+.gl-content2__h { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.25; padding-bottom: 0.12em; margin: 4px 0 0; }
+.gl-content2__h .gl-accent { display: inline-block; padding-bottom: 0.08em; }
 .gl-carousel {
   position: relative;
   width: 100%;
-  height: 340px;
+  height: 380px;
   margin: 0;
   overflow: hidden;
   -webkit-mask: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
@@ -479,10 +482,17 @@
   transition: transform 0.85s cubic-bezier(.42,0,.18,1);
   will-change: transform;
 }
-/* Rectangular 4/5 portrait tiles (like the original marquee posts). */
+/* Snap-class: applied for one frame when the infinite loop jumps back to
+   its equivalent middle-copy position. We disable BOTH the track's
+   transform transition AND the tiles' scale/opacity transitions so the
+   whole carousel snaps as one frozen frame (otherwise the newly-centered
+   tile would visibly pop from small → large). */
+.gl-carousel__track--snap,
+.gl-carousel__track--snap .gl-cart { transition: none !important; }
+/* Real portrait tiles (9/16, the actual reel/TikTok ratio). */
 .gl-cart {
-  flex: 0 0 230px;
-  aspect-ratio: 4 / 5;
+  flex: 0 0 180px;
+  aspect-ratio: 9 / 16;
   position: relative;
   border-radius: 20px;
   transition: transform 0.85s cubic-bezier(.42,0,.18,1), opacity 0.85s ease, filter 0.85s ease;

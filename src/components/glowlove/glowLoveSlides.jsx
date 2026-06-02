@@ -311,20 +311,45 @@ export function Content() {
   );
 }
 
-/* Content · carousel — pieces glide horizontally through center, the
-   active one full size + sharp, neighbors peeking smaller and faded.
-   Each tile is rectangular (4/5) with the creator name pill attached at
-   the bottom, like the original marquee tiles. */
+/* Content · infinite carousel — pieces glide horizontally through center
+   forever. We render the post list TRIPLED so the user can see motion in
+   both directions; when we reach the third copy we silently snap back to
+   the equivalent position in the middle copy (no transition for that one
+   frame), so the loop is seamless. */
 const CAROUSEL_MS = 2800;
-const TILE_W = 230;
+const TRANS_MS = 850;
+const TILE_W = 180;
 const TILE_GAP = 28;
 export function ContentSpotlight() {
   const posts = ALL_POSTS;
-  const [idx, setIdx] = useState(0);
+  const N = posts.length;
+  const tripled = useMemo(() => [...posts, ...posts, ...posts], [posts]);
+  // virtual index drifts forward indefinitely; we snap it back into the
+  // middle copy whenever it crosses into the third copy.
+  const [vIdx, setVIdx] = useState(N);
+  const [snapping, setSnapping] = useState(false);
+
   useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % posts.length), CAROUSEL_MS);
+    const id = setInterval(() => setVIdx((i) => i + 1), CAROUSEL_MS);
     return () => clearInterval(id);
-  }, [posts.length]);
+  }, []);
+
+  useEffect(() => {
+    if (vIdx >= 2 * N) {
+      // After the transition finishes, jump back by N without animation.
+      const t = setTimeout(() => {
+        setSnapping(true);
+        setVIdx((i) => i - N);
+        // Re-enable the transition after the snap has been painted.
+        requestAnimationFrame(() => requestAnimationFrame(() => setSnapping(false)));
+      }, TRANS_MS + 30);
+      return () => clearTimeout(t);
+    }
+    return undefined;
+  }, [vIdx, N]);
+
+  const displayIdx = ((vIdx % N) + N) % N;
+
   return (
     <div className="gl-slide gl-slide--center gl-content2">
       <div className="gl-cnt-head">
@@ -332,13 +357,13 @@ export function ContentSpotlight() {
       </div>
       <div className="gl-carousel">
         <div
-          className="gl-carousel__track"
-          style={{ transform: `translateX(calc(50% - ${TILE_W / 2}px - ${idx * (TILE_W + TILE_GAP)}px))` }}
+          className={`gl-carousel__track ${snapping ? 'gl-carousel__track--snap' : ''}`}
+          style={{ transform: `translateX(calc(50% - ${TILE_W / 2}px - ${vIdx * (TILE_W + TILE_GAP)}px))` }}
         >
-          {posts.map((p, i) => {
+          {tripled.map((p, i) => {
             const [pcI, labelI] = PLAT_META[p.plat] || PLAT_META.TikTok;
             return (
-              <div key={i} className={`gl-cart ${i === idx ? 'on' : ''}`} aria-hidden={i !== idx}>
+              <div key={i} className={`gl-cart ${i === vIdx ? 'on' : ''}`}>
                 <span className="gl-cart__img" style={{ backgroundImage: `url(${p.img})` }} />
                 <span className={`gl-cart__plat gl-cart__plat--${pcI}`}><PlatGlyph p={pcI} /> {labelI}</span>
                 <span className="gl-cart__tag">
@@ -350,7 +375,7 @@ export function ContentSpotlight() {
           })}
         </div>
       </div>
-      <div className="gl-spot__count">{idx + 1} <span>/ {posts.length}</span></div>
+      <div className="gl-spot__count">{displayIdx + 1} <span>/ {N}</span></div>
     </div>
   );
 }
